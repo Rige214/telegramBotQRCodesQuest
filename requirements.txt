@@ -1,0 +1,4 @@
+pyTelegramBotAPI==4.14.0
+opencv-python==4.9.0.80
+qrcode==7.4.2
+telebot~=0.0.5

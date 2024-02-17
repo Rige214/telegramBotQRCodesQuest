@@ -3,7 +3,6 @@ import configuration
 import cv2
 import telebot
 
-
 bot = telebot = telebot.TeleBot(configuration.token)
 
 
@@ -19,7 +18,6 @@ def get_photo(message):
     user_id = message.from_user.id
     file_telegram_id = message.photo[-1].file_id
     file_info = bot.get_file(file_telegram_id)
-    # print('file_id telegram: ', file_telegram_id)
     downloaded_file = bot.download_file(file_info.file_path)
     with open(f"img/{user_id}.jpg", 'wb') as new_file:
         new_file.write(downloaded_file)
@@ -27,20 +25,18 @@ def get_photo(message):
     img = cv2.imread(f"img/{user_id}.jpg")
     detector = cv2.QRCodeDetectorAruco()
     data, bbox, straight_qrcode = detector.detectAndDecode(img)
-    # print(f"QRCode data: {data}")
     # bot.send_message(message.chat.id, f'Содержимое QR-кода: {data}')
 
     with open('stepsQuests.json', 'r') as j:
         json_data = json.load(j)
-        # print('js data: ', json_data)
         if str(json_data['step_one']) == str(data):
-            bot.send_message(message.chat.id, 'Выполните действие 1')
+            bot.send_message(message.chat.id, configuration.ACTION_ONE)
         elif str(json_data['step_two']) == str(data):
-            bot.send_message(message.chat.id, 'Выполните действие 2')
+            bot.send_message(message.chat.id, configuration.ACTION_TWO)
         elif str(json_data['step_three']) == str(data):
-            bot.send_message(message.chat.id, 'Выполните действие 3')
+            bot.send_message(message.chat.id, configuration.ACTION_THREE)
         elif str(json_data['step_four']) == str(data):
-            bot.send_message(message.chat.id, 'Выполните действие 4')
+            bot.send_message(message.chat.id, configuration.ACTION_FOUR)
         else:
             print('no find json data')
             bot.send_message(message.chat.id, 'Пожалуйста, повторите попытку')
