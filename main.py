@@ -1,3 +1,4 @@
+import html
 import json
 import configuration
 import cv2
@@ -9,8 +10,15 @@ bot = telebot = telebot.TeleBot(configuration.token)
 @bot.message_handler(commands=['start'])
 def message_start(message):
     user_name = message.from_user.first_name
-    bot.send_message(message.chat.id, f'Приветствую,<strong> {user_name} !</strong>\n Бот создан для прохождения квеста'
+    bot.send_message(message.chat.id, f'Приветствую, {html.escape(user_name)} !\n Бот создан для прохождения квеста'
                                       f' по QR-коду', parse_mode="HTML")
+
+    try:
+        with open("stepsQuests.json", "r") as fp:
+            json.load(fp)
+    except:
+        print('file not found')
+        bot.send_message(message.chat.id, 'Произошла ошибка. Пожалуйста, обратитесь к администратору')
 
 
 @bot.message_handler(content_types=['photo'])
@@ -25,21 +33,16 @@ def get_photo(message):
     img = cv2.imread(f"img/{user_id}.jpg")
     detector = cv2.QRCodeDetectorAruco()
     data, bbox, straight_qrcode = detector.detectAndDecode(img)
-    # bot.send_message(message.chat.id, f'Содержимое QR-кода: {data}')
+    bot.send_message(message.chat.id, f'Содержимое QR-кода: {data}')
 
-    with open('stepsQuests.json', 'r') as j:
-        json_data = json.load(j)
-        if str(json_data['step_one']) == str(data):
-            bot.send_message(message.chat.id, configuration.ACTION_ONE)
-        elif str(json_data['step_two']) == str(data):
-            bot.send_message(message.chat.id, configuration.ACTION_TWO)
-        elif str(json_data['step_three']) == str(data):
-            bot.send_message(message.chat.id, configuration.ACTION_THREE)
-        elif str(json_data['step_four']) == str(data):
-            bot.send_message(message.chat.id, configuration.ACTION_FOUR)
+    with open("stepsQuests.json", "r") as fp:
+        step_to_code = json.load(fp)
+        code_to_step = {step: code for code, step in step_to_code.items()}
+        if code_to_step.get(int(data)) == step_to_code:
+            print('non json data')
+            bot.send_message(message.chat.id, 'Пожалуйста, повторите попытку! ')
         else:
-            print('no find json data')
-            bot.send_message(message.chat.id, 'Пожалуйста, повторите попытку')
+            bot.send_message(message.chat.id, code_to_step.get(int(data)))
 
 
 bot.infinity_polling()

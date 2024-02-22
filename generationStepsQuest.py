@@ -1,17 +1,19 @@
-import json
 import configuration
+import json
+import zlib
 
 
-quest_list = [configuration.STEP_ONE, configuration.STEP_TWO, configuration.STEP_FOUR, configuration.STEP_THREE]
+q_list = (
+    configuration.StepStatus.one.value,
+    configuration.StepStatus.two.value,
+    configuration.StepStatus.three.value,
+    configuration.StepStatus.four.value,
+)
 
-q_list = {
-        "step_one": hash(quest_list[0]),
-        "step_two": hash(quest_list[1]),
-        "step_three": hash(quest_list[2]),
-        "step_four": hash(quest_list[3]),
-}
+with open("stepsQuests.json", "w") as fp:
+    json.dump({
+        f"{step}": zlib.crc32(q_list[k].encode('utf-8'))
+        for k, step in enumerate(q_list)
+    }, fp)
 
-with open(f'stepsQuests.json', 'w') as file:
-    json.dump(q_list, file)
-print(q_list)
 print('JSON-key generated successful')

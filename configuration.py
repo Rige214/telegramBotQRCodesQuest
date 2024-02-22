@@ -1,9 +1,10 @@
-token = ""
-STEP_ONE = 'step_one'
-STEP_TWO = 'step_two'
-STEP_THREE = 'step_three'
-STEP_FOUR = 'step_four'
-ACTION_ONE = 'action 1'
-ACTION_TWO = 'action 2'
-ACTION_THREE = 'action 3'
-ACTION_FOUR = 'action 4'
+import enum
+
+token = "1082695399:AAFjF3byDCUZb4qw8RxL1m8TkXdfwHm3_aE"
+
+
+class StepStatus(enum.Enum):
+    one = 'action one'
+    two = 'action two'
+    three = 'action three'
+    four = 'action four'
