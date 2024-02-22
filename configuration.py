@@ -1,6 +1,6 @@
 import enum
 
-token = "1082695399:AAFjF3byDCUZb4qw8RxL1m8TkXdfwHm3_aE"
+token = "  "
 
 
 class StepStatus(enum.Enum):
